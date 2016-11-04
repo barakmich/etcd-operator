@@ -21,7 +21,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/coreos/etcd-operator/pkg/analytics"
 	"github.com/coreos/etcd-operator/pkg/chaos"
 	"github.com/coreos/etcd-operator/pkg/controller"
 	"github.com/coreos/etcd-operator/pkg/util/k8sutil"
@@ -38,14 +37,13 @@ import (
 )
 
 var (
-	analyticsEnabled bool
-	pvProvisioner    string
-	masterHost       string
-	tlsInsecure      bool
-	certFile         string
-	keyFile          string
-	caFile           string
-	namespace        string
+	pvProvisioner string
+	masterHost    string
+	tlsInsecure   bool
+	certFile      string
+	keyFile       string
+	caFile        string
+	namespace     string
 
 	chaosLevel int
 
@@ -59,8 +57,6 @@ var (
 )
 
 func init() {
-	flag.BoolVar(&analyticsEnabled, "analytics", true, "Send analytical event (Cluster Created/Deleted etc.) to Google Analytics")
-
 	flag.StringVar(&pvProvisioner, "pv-provisioner", "kubernetes.io/gce-pd", "persistent volume provisioner type")
 	flag.StringVar(&masterHost, "master", "", "API Server addr, e.g. ' - NOT RECOMMENDED FOR PRODUCTION - http://127.0.0.1:8080'. Omit parameter to run in on-cluster mode and utilize the service account token.")
 	flag.StringVar(&certFile, "cert-file", "", " - NOT RECOMMENDED FOR PRODUCTION - Path to public TLS certificate file.")
@@ -83,12 +79,6 @@ func main() {
 		fmt.Println("etcd-operator", version.Version)
 		os.Exit(0)
 	}
-
-	if analyticsEnabled {
-		analytics.Enable()
-	}
-
-	analytics.OperatorStarted()
 
 	id, err := os.Hostname()
 	if err != nil {

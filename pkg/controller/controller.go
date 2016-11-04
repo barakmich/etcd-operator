@@ -23,7 +23,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/coreos/etcd-operator/pkg/analytics"
 	"github.com/coreos/etcd-operator/pkg/cluster"
 	"github.com/coreos/etcd-operator/pkg/spec"
 	"github.com/coreos/etcd-operator/pkg/util/k8sutil"
@@ -133,7 +132,6 @@ func (c *Controller) Run() error {
 			switch event.Type {
 			case "ADDED":
 				clusterSpec := &event.Object.Spec
-
 				backup := clusterSpec.Backup
 				if backup != nil && backup.MaxSnapshot != 0 {
 					err := k8sutil.CreateBackupReplicaSetAndService(c.KubeCli, clusterName, c.Namespace, c.PVProvisioner, *backup)
@@ -148,8 +146,6 @@ func (c *Controller) Run() error {
 
 				nc := cluster.New(c.KubeCli, clusterName, c.Namespace, clusterSpec, stopC, &c.waitCluster)
 				c.clusters[clusterName] = nc
-
-				analytics.ClusterCreated()
 			case "MODIFIED":
 				if c.clusters[clusterName] == nil {
 					c.logger.Warningf("ignore modification: cluster %q not found (or dead)", clusterName)
@@ -163,7 +159,6 @@ func (c *Controller) Run() error {
 				}
 				c.clusters[clusterName].Delete()
 				delete(c.clusters, clusterName)
-				analytics.ClusterDeleted()
 			}
 		}
 	}()

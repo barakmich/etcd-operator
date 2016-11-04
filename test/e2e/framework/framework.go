@@ -106,7 +106,7 @@ func (f *Framework) setupEtcdOperator(opImage string) error {
 					Image: opImage,
 					Command: []string{
 						"/bin/sh", "-c",
-						"/usr/local/bin/etcd-operator --analytics=false",
+						"/usr/local/bin/etcd-operator",
 					},
 					Env: []api.EnvVar{
 						{
